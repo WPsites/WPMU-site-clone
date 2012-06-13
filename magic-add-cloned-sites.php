@@ -324,7 +324,6 @@ if (isset($cloned)) { $nr_sites = count($cloned); } else { $nr_sites = '0'; }
 if (isset($failed)) { $nr_failed = count($failed); } else { $nr_failed = '0'; }
 $timeforone = 3.5;
 $normaltime = $nr_sites * $timeforone;
-// log for development purposes. I need some feedback to make the plugin work better.
 
 ?>
     <div id="tabs-2" >
@@ -332,47 +331,5 @@ $normaltime = $nr_sites * $timeforone;
 		echo '<h4>' . __( 'Job done, here are the results:', 'wpmusc_trdom' ) . '</h4>';
         if ($nr_sites > 0) { _e("<p>It took only " .  $time . " seconds to create and clone ". $nr_sites . " sites!</p>", 'wpmusc_trdom' ); }
         if ($failed) { _e("<span class=\"error\"><p>Hey $nr_failed sites could not be cloned due to errors, you might want to check the log why they failed.</p></span>", 'wpmusc_trdom' ); }
-        // show donation options
-        if ($nr_sites > 0) {
-		echo '<h4>' . __( 'You must be pleased...', 'wpmusc_trdom' ) . '</h4>'; 
-		echo __("<p>Normally this would have taken you about " .  $normaltime . " minutes to do this all manually.<br />", 'wpmusc_trdom');
-		echo __("You could thank me by buying a tea, coffee, cappuchino, or if you are very pleased with the time this plugin saved you, a coffee with cake!</p>", 'wpmusc_trdom');
-        echo __("<p>You can buy me one of these items by clicking on one of the buttons below.<br/>Come on its only a coffee, give it a try!</p>", 'wpmusc_trdom');
-        ?>
-        <div id="donations">
-            <form class="donate" name="tea-donation" action="https://www.paypal.com/nl/cgi-bin/webscr" method="post" target="paypal">
-                <input type="hidden" name="cmd" value="_donations">
-                <input type="hidden" name="business" value="paypal@fritsjan.nl">
-                <input type="hidden" name="item_name" value="Add Cloned Sites for Wordpress Plugin -> I buy you a cup of tea">
-                <input type="hidden" name="currency_code" value="EUR">
-                <input type="hidden" name="amount" value="2.50">
-                <input type="image" src="<?php echo $pluginUrl ?>donatebuttons/tea.gif" border="0" name="submit" alt="Yes lets buy you a cup of tea!">
-            </form> 
-            <form class="donate" name="coffee-donation" action="https://www.paypal.com/nl/cgi-bin/webscr" method="post" target="paypal">
-                <input type="hidden" name="cmd" value="_donations">
-                <input type="hidden" name="business" value="paypal@fritsjan.nl">
-                <input type="hidden" name="item_name" value="Add Cloned Sites for Wordpress Plugin -> I buy you a cup of coffee">
-                <input type="hidden" name="currency_code" value="EUR">
-                <input type="hidden" name="amount" value="3.50">
-                <input type="image" src="<?php echo $pluginUrl ?>donatebuttons/coffee.gif" border="0" name="submit" alt="Yes lets buy you a cup of coffee!">
-            </form> 
-            <form class="donate" name="cappucino-donation" action="https://www.paypal.com/nl/cgi-bin/webscr" method="post" target="paypal">
-                <input type="hidden" name="cmd" value="_donations">
-                <input type="hidden" name="business" value="paypal@fritsjan.nl">
-                <input type="hidden" name="item_name" value="Add Cloned Sites for Wordpress Plugin -> I buy you a cappucino">
-                <input type="hidden" name="currency_code" value="EUR">
-                <input type="hidden" name="amount" value="5.00">
-                <input type="image" src="<?php echo $pluginUrl ?>donatebuttons/cappucino.gif" border="0" name="submit" alt="Yes lets buy you a cappucino!">
-            </form> 
-            <form class="donate" name="coffeeandcake-donation" action="https://www.paypal.com/nl/cgi-bin/webscr" method="post" target="paypal">
-                <input type="hidden" name="cmd" value="_donations">
-                <input type="hidden" name="business" value="paypal@fritsjan.nl">
-                <input type="hidden" name="item_name" value="Add Cloned Sites for Wordpress Plugin -> I buy you coffee and cake">
-                <input type="hidden" name="currency_code" value="EUR">
-                <input type="hidden" name="amount" value="8.00">
-                <input type="image" src="<?php echo $pluginUrl ?>donatebuttons/coffeeandcake.gif" border="0" name="submit" alt="Yes lets buy you coffee and cake!">
-            </form> 
-        </div>
-        <?php } ?>
     </div>
 </div>
