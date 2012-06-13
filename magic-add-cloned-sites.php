@@ -8,8 +8,8 @@
 // make translation ok ->
 
 // some functions
-function acswpmu_trim_value(&$value) { $value = trim(trim($value), ' ,');}
-function acswpmu_valid_url($str){ return ( ! preg_match('/^([A-Z0-9][A-Z0-9_-]*(?:\.[A-Z0-9][A-Z0-9_-]*)+):?(\d+)?\/?/i', $str)) ? FALSE : TRUE; }
+function wpmusc_trim_value(&$value) { $value = trim(trim($value), ' ,');}
+function wpmusc_valid_url($str){ return ( ! preg_match('/^([A-Z0-9][A-Z0-9_-]*(?:\.[A-Z0-9][A-Z0-9_-]*)+):?(\d+)?\/?/i', $str)) ? FALSE : TRUE; }
 
 // start timing
 $time_start = microtime(true);
@@ -18,12 +18,12 @@ $cloned = NULL;
 $failed = NULL;
  
 // Get POST data
-$template_id = $_POST['acswpmu_template_id'];
-$user_id = $_POST['acswpmu_userid'];
-if ($_POST['acswpmu_domainmap'] == 'on') { $domainmap = TRUE; } else { $domainmap = FALSE; }
-if ($_POST['acswpmu_copyimages'] == 'on') { $copy_images = TRUE; } else { $copy_images = FALSE; }
-//if ($_POST['acswpmu_posts'] == 'on') { $copy_posts = TRUE; }
-//if ($_POST['acswpmu_pages'] == 'on') { $copy_pages = TRUE; }
+$template_id = $_POST['wpmusc_template_id'];
+$user_id = $_POST['wpmusc_userid'];
+if ($_POST['wpmusc_domainmap'] == 'on') { $domainmap = TRUE; } else { $domainmap = FALSE; }
+if ($_POST['wpmusc_copyimages'] == 'on') { $copy_images = TRUE; } else { $copy_images = FALSE; }
+//if ($_POST['wpmusc_posts'] == 'on') { $copy_posts = TRUE; }
+//if ($_POST['wpmusc_pages'] == 'on') { $copy_pages = TRUE; }
 
 $pluginUrl = WP_PLUGIN_URL.'/'.str_replace(basename( __FILE__),"",plugin_basename(__FILE__));
 
@@ -32,9 +32,9 @@ $admin_info = get_userdata($user_id);
 $admin_email = $admin_info->user_email;
 
 // prepare/get data based on single / multi input
-if ($_POST['acswpmu_multiple'] == 'on'){
+if ($_POST['wpmusc_multiple'] == 'on'){
 	// get post and trim to remove whitespace
-	$new_sites = trim($_POST['acswpmu_new_sites']);
+	$new_sites = trim($_POST['wpmusc_new_sites']);
 	// explode the post to lines
 	$the_array = explode( "\n", $new_sites );
 	// explode each line 
@@ -46,9 +46,9 @@ if ($_POST['acswpmu_multiple'] == 'on'){
 	}  
 } else {
 	// get data for single site
-	$siteurl = $_POST['acswpmu_siteurl'];
-	$blogname = $_POST['acswpmu_blogname'];
-	$blogdescription = $_POST['acswpmu_blogdescription'];
+	$siteurl = $_POST['wpmusc_siteurl'];
+	$blogname = $_POST['wpmusc_blogname'];
+	$blogdescription = $_POST['wpmusc_blogdescription'];
 	$the_array[0][0] = $siteurl;
 	$the_array[0][1] = $blogdescription;
 	$the_array[0][2] = $blogname;
@@ -59,20 +59,20 @@ if ($_POST['acswpmu_multiple'] == 'on'){
 
 // trim each value in the array from whitespaces and left comma's
 for ( $i = 0; $i < sizeof( $the_array ); $i++ ) {
-	array_walk($the_array[$i], 'acswpmu_trim_value');
+	array_walk($the_array[$i], 'wpmusc_trim_value');
 }
 
 	
 // And now: here the loop starts
 if (sizeof($the_array) > 0) {
 
-echo "<h3>" . __( 'Adding cloned sites ', 'acswpmu_trdom' ) . "</h3>";
+echo "<h3>" . __( 'Adding cloned sites ', 'wpmusc_trdom' ) . "</h3>";
 
 // create tabs ?>
 <div id="tabs">
 <ul>
-	<li><a href="#tabs-1"><?php _e( 'Job log', 'acswpmu_trdom' ); ?></a></li>
-	<li><a href="#tabs-2"><?php _e( 'Finished', 'acswpmu_trdom' ); ?></a></li>
+	<li><a href="#tabs-1"><?php _e( 'Job log', 'wpmusc_trdom' ); ?></a></li>
+	<li><a href="#tabs-2"><?php _e( 'Finished', 'wpmusc_trdom' ); ?></a></li>
 </ul>
 	
 <?php
@@ -98,12 +98,12 @@ foreach($the_array as $line) {
 		$fulldomain = get_blog_details(1)->domain . "/" . $dashedsiteurl; 
 		$path = "/" . $dashedsiteurl; 
 	}
-	echo "<h4>" . __( 'Start with creating site for ' . $siteurl, 'acswpmu_trdom' ) . "</h4>";
+	echo "<h4>" . __( 'Start with creating site for ' . $siteurl, 'wpmusc_trdom' ) . "</h4>";
 
 	//check for correct and non empty siteurl
 	if ($domainmap){
-		if (!acswpmu_valid_url($siteurl)){
-			_e("<span class=\"error\">The url '$siteurl' is not a valid url.</span>", 'acswpmu_trdom' );
+		if (!wpmusc_valid_url($siteurl)){
+			_e("<span class=\"error\">The url '$siteurl' is not a valid url.</span>", 'wpmusc_trdom' );
 			$error = TRUE;
 		}
 	}
@@ -112,15 +112,15 @@ foreach($the_array as $line) {
 	if ($subdomain_install){
 		if(!$error){ 
 			if($exist_id = $wpdb->get_var("SELECT blog_id FROM $wpdb->blogs WHERE domain = '$fulldomain'")) {
-				_e("<span class=\"error\">The URL $fulldomain already exist, we skipped it!</span>", 'acswpmu_trdom' );
+				_e("<span class=\"error\">The URL $fulldomain already exist, we skipped it!</span>", 'wpmusc_trdom' );
 				$error = TRUE;		
 			} else {
 				// Start with adding the new blog to the blogs table
 				$new_blog_id = insert_blog( $domain, $path, '1');
 				if(is_integer($new_blog_id)) {
-					_e("New site created with id: $new_blog_id<br/>", 'acswpmu_trdom' );
+					_e("New site created with id: $new_blog_id<br/>", 'wpmusc_trdom' );
 				} else {
-					_e("<span class=\"error\">The URL $domain already exist, we skipped it!</span>", 'acswpmu_trdom' );
+					_e("<span class=\"error\">The URL $domain already exist, we skipped it!</span>", 'wpmusc_trdom' );
 					$error = TRUE;
 				}
 			}
@@ -128,15 +128,15 @@ foreach($the_array as $line) {
 	} else {
 		if(!$error){ 
 			if($exist_id = $wpdb->get_var("SELECT blog_id FROM $wpdb->blogs WHERE path = '$path/'")) {
-				_e("<span class=\"error\">The URL $fulldomain already exist, we skipped it!</span>", 'acswpmu_trdom' );
+				_e("<span class=\"error\">The URL $fulldomain already exist, we skipped it!</span>", 'wpmusc_trdom' );
 				$error = TRUE;		
 			} else {
 				// Start with adding the new blog to the blogs table
 				$new_blog_id = insert_blog( $domain, $path, '1');
 				if(is_integer($new_blog_id)) {
-					_e("New site created with id: $new_blog_id<br/>", 'acswpmu_trdom' );
+					_e("New site created with id: $new_blog_id<br/>", 'wpmusc_trdom' );
 				} else {
-					_e("<span class=\"error\">The URL $fulldomain already exist, we skipped it!</span>", 'acswpmu_trdom' );
+					_e("<span class=\"error\">The URL $fulldomain already exist, we skipped it!</span>", 'wpmusc_trdom' );
 					$error = TRUE;
 				}
 			}
@@ -158,21 +158,21 @@ foreach($the_array as $line) {
 				// duplicate the old table structure
 				$result = $wpdb->query( "CREATE TABLE $new_table LIKE $old_table[0]" );
 				if($result === FALSE) { 
-					_e("<span class=\"error\">Failed to create $new_table.</span>", 'acswpmu_trdom' );
+					_e("<span class=\"error\">Failed to create $new_table.</span>", 'wpmusc_trdom' );
 					$error = TRUE;
 				} else { 
-					_e("Table created: $new_table.<br>", 'acswpmu_trdom' );
+					_e("Table created: $new_table.<br>", 'wpmusc_trdom' );
 					// copy data from old_table to new_table
 					$result = $wpdb->query( "INSERT INTO $new_table SELECT * FROM $old_table[0]" );
 					if($result === FALSE) {
-						_e("<span class=\"error\">Failed to copy data from $old_table[0] to $new_table.</span>", 'acswpmu_trdom' );
+						_e("<span class=\"error\">Failed to copy data from $old_table[0] to $new_table.</span>", 'wpmusc_trdom' );
 						$error = TRUE;
 					} else {
-						_e("Copied data from $old_table[0] to $new_table.<br/>", 'acswpmu_trdom' );
+						_e("Copied data from $old_table[0] to $new_table.<br/>", 'wpmusc_trdom' );
 					}						
 				}
 			} else { 
-				_e("<span class=\"error\">The table $new_table already existed.</span>", 'acswpmu_trdom' );
+				_e("<span class=\"error\">The table $new_table already existed.</span>", 'wpmusc_trdom' );
 				$error = TRUE;
 			}
 		}
@@ -182,9 +182,9 @@ foreach($the_array as $line) {
 	if(!$error) {
 		$role = "administrator";
 		if ( add_user_to_blog( $new_blog_id, $user_id, $role ) ) {
-			_e( 'Added user '.$user_id.' as '.$role.' to site '.$new_blog_id.'.<br/>',  'acswpmu_trdom' );
+			_e( 'Added user '.$user_id.' as '.$role.' to site '.$new_blog_id.'.<br/>',  'wpmusc_trdom' );
 		} else {
-			_e( 'Failed to add user '.$user_id.' as '.$role.' to site '.$new_blog_id.'.<br/>', 'acswpmu_trdom' );
+			_e( 'Failed to add user '.$user_id.' as '.$role.' to site '.$new_blog_id.'.<br/>', 'wpmusc_trdom' );
 			$error = TRUE;
 		}
 	}
@@ -211,9 +211,9 @@ foreach($the_array as $line) {
 		// 'check' if it went ok - NOTE: is just a basic check could give an error anyway...
 		if(get_blog_option($new_blog_id, 'blogdescription') != $blogdescription) { 
 			//$error = TRUE; 
-			_e("<span class=\"error\">Maybe we had an error updating the options table with the new data.</span>", 'acswpmu_trdom' );
+			_e("<span class=\"error\">Maybe we had an error updating the options table with the new data.</span>", 'wpmusc_trdom' );
 		} else { 
-			_e("Updated the options table with cloned data<br>", 'acswpmu_trdom' );
+			_e("Updated the options table with cloned data<br>", 'wpmusc_trdom' );
 		}
 	}
 	
@@ -233,13 +233,13 @@ foreach($the_array as $line) {
 			// Map the domain
 			$result = $wpdb->insert( $tbl_domain_map, array('blog_id' => $new_blog_id, 'domain' => $siteurl, 'active' => '1'));
 			if($result) { 
-				_e("New site mapped to domain: $siteurl<br/>", 'acswpmu_trdom' );
+				_e("New site mapped to domain: $siteurl<br/>", 'wpmusc_trdom' );
 			} else { 
-				_e("<span class=\"error\">Domain mapping for $siteurl failed</span>", 'acswpmu_trdom' );
+				_e("<span class=\"error\">Domain mapping for $siteurl failed</span>", 'wpmusc_trdom' );
 				$error = TRUE;
 			}
 		} else {
-			_e("<span class=\"error\">Domainmapping failed because the domainmap plugin is not activated!</span>", 'acswpmu_trdom' );
+			_e("<span class=\"error\">Domainmapping failed because the domainmap plugin is not activated!</span>", 'wpmusc_trdom' );
 			$error = TRUE;
 		}
 	}
@@ -280,7 +280,7 @@ foreach($the_array as $line) {
 					@unlink( $dir_to_copy_into . '/sitemap.xml' );
 
 			} else {
-				_e("<span class=\"error\">Was unable to copy images and uploads!</span>", 'acswpmu_trdom' );
+				_e("<span class=\"error\">Was unable to copy images and uploads!</span>", 'wpmusc_trdom' );
 			}
 		}
 	}
@@ -288,7 +288,7 @@ foreach($the_array as $line) {
 	//reset permalink structure
 	if(!$error) {
 		switch_to_blog($new_blog_id);
-		//_e("Switched from here to $new_blog_id to reset permalinks<br>", 'acswpmu_trdom' );
+		//_e("Switched from here to $new_blog_id to reset permalinks<br>", 'wpmusc_trdom' );
 		global $wp_rewrite;
 		$wp_rewrite->init();
 		$wp_rewrite->flush_rules();
@@ -296,13 +296,13 @@ foreach($the_array as $line) {
 		wpmu_update_blogs_date( );
 		//go back to admin
 		restore_current_blog();
-		_e("Permalinks updated.<br>", 'acswpmu_trdom' );	
+		_e("Permalinks updated.<br>", 'wpmusc_trdom' );	
 	}
 
 	// count succesfull and failed sites
 	if(!$error) { 
-		_e("Job done, sucesfully created $fulldomain with site id: $new_blog_id<br>", 'acswpmu_trdom' );
-		if($domainmap) { _e("and mapped the site to: <a href=\"http://$siteurl\" target=\"test\">$siteurl</a>.<br>", 'acswpmu_trdom' ); }
+		_e("Job done, sucesfully created $fulldomain with site id: $new_blog_id<br>", 'wpmusc_trdom' );
+		if($domainmap) { _e("and mapped the site to: <a href=\"http://$siteurl\" target=\"test\">$siteurl</a>.<br>", 'wpmusc_trdom' ); }
 		// count succesfull cloned sites
 		$cloned[] = $siteurl;
 	} else {
@@ -325,24 +325,19 @@ if (isset($failed)) { $nr_failed = count($failed); } else { $nr_failed = '0'; }
 $timeforone = 3.5;
 $normaltime = $nr_sites * $timeforone;
 // log for development purposes. I need some feedback to make the plugin work better.
-$headers = "From: info@productbakery.com" . "\r\n";
-$to = "clonelogs@productbakery.com";
-$subject = "Clone log from: $domain";
-$message = "cloned $nr_sites in $time, failed $nr_failed";
-//@mail($to, $subject, $message, $headers)
 
 ?>
     <div id="tabs-2" >
         <?php 
-		echo '<h4>' . __( 'Job done, here are the results:', 'acswpmu_trdom' ) . '</h4>';
-        if ($nr_sites > 0) { _e("<p>It took only " .  $time . " seconds to create and clone ". $nr_sites . " sites!</p>", 'acswpmu_trdom' ); }
-        if ($failed) { _e("<span class=\"error\"><p>Hey $nr_failed sites could not be cloned due to errors, you might want to check the log why they failed.</p></span>", 'acswpmu_trdom' ); }
+		echo '<h4>' . __( 'Job done, here are the results:', 'wpmusc_trdom' ) . '</h4>';
+        if ($nr_sites > 0) { _e("<p>It took only " .  $time . " seconds to create and clone ". $nr_sites . " sites!</p>", 'wpmusc_trdom' ); }
+        if ($failed) { _e("<span class=\"error\"><p>Hey $nr_failed sites could not be cloned due to errors, you might want to check the log why they failed.</p></span>", 'wpmusc_trdom' ); }
         // show donation options
         if ($nr_sites > 0) {
-		echo '<h4>' . __( 'You must be pleased...', 'acswpmu_trdom' ) . '</h4>'; 
-		echo __("<p>Normally this would have taken you about " .  $normaltime . " minutes to do this all manually.<br />", 'acswpmu_trdom');
-		echo __("You could thank me by buying a tea, coffee, cappuchino, or if you are very pleased with the time this plugin saved you, a coffee with cake!</p>", 'acswpmu_trdom');
-        echo __("<p>You can buy me one of these items by clicking on one of the buttons below.<br/>Come on its only a coffee, give it a try!</p>", 'acswpmu_trdom');
+		echo '<h4>' . __( 'You must be pleased...', 'wpmusc_trdom' ) . '</h4>'; 
+		echo __("<p>Normally this would have taken you about " .  $normaltime . " minutes to do this all manually.<br />", 'wpmusc_trdom');
+		echo __("You could thank me by buying a tea, coffee, cappuchino, or if you are very pleased with the time this plugin saved you, a coffee with cake!</p>", 'wpmusc_trdom');
+        echo __("<p>You can buy me one of these items by clicking on one of the buttons below.<br/>Come on its only a coffee, give it a try!</p>", 'wpmusc_trdom');
         ?>
         <div id="donations">
             <form class="donate" name="tea-donation" action="https://www.paypal.com/nl/cgi-bin/webscr" method="post" target="paypal">

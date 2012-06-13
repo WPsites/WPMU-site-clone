@@ -3,7 +3,7 @@ jQuery(document).ready(function(){
 	jQuery('input[type=checkbox]').tzCheckbox({labels:['Yes','No']});
 	jQuery("#singlebox").hide();
 	jQuery(".tzCheckBox").click(function() {
-		if (jQuery('input[name="acswpmu_multiple"]:checked').val() == "on") {
+		if (jQuery('input[name="wpmusc_multiple"]:checked').val() == "on") {
 		   jQuery("#multiplebox").show("slow");
 		   jQuery("#singlebox").hide();
 		} else {
