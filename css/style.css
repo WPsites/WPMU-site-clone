@@ -1,0 +1,28 @@
+#acswpmu_form label {
+	float: left;
+	width: 230px;
+}
+#acswpmu_form .checkboxlabel {
+	padding-top: 8px;
+	width: 320px;
+}
+
+.error {
+	color: red;
+	font-style: italic;
+	display:block;	
+}
+
+#tabs {
+	margin-top: 20px;
+	margin-right: 20px;
+}
+
+#donations {
+	height:150px;
+}
+
+.donate {
+	float:left;
+	padding-right: 10px;
+}
