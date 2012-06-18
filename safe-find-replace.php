@@ -1,4 +1,4 @@
-
+<?php
  // use it like this...
  //icit_srdb_replacer( $wpdb->dbh, 'crap', 'is ACE', array( 'wp_comments' ) ) ;
 

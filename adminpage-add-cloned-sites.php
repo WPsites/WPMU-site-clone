@@ -84,6 +84,10 @@ if(!$error) {
 		<label for="wpmusc_copyimages" class="checkboxlabel"><?php _e("Copy all images and uploads from template to new blog(s):", 'wpmusc_trdom' ); ?></label>
         <input type="checkbox" id="wpmusc_copyimages" name="wpmusc_copyimages" data-on="Yes, copy images" data-off="No, don't copy images" checked="checked" />
       </p>
+            <p>
+    	<label for="wpmusc_replaceurl" class="checkboxlabel"><?php _e("Replace any occurrence of the template sites URLs with the new URL :", 'wpmusc_trdom' ); ?></label>
+        <input type="checkbox" id="wpmusc_replaceurl" name="wpmusc_replaceurl" data-on="Yes, replace URLs" data-off="No, don't replace URLs" checked="checked" />
+      </p>
        
 <?php /*
         <p>

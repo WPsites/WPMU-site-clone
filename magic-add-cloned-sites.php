@@ -22,6 +22,9 @@ $template_id = $_POST['wpmusc_template_id'];
 $user_id = $_POST['wpmusc_userid'];
 if ($_POST['wpmusc_domainmap'] == 'on') { $domainmap = TRUE; } else { $domainmap = FALSE; }
 if ($_POST['wpmusc_copyimages'] == 'on') { $copy_images = TRUE; } else { $copy_images = FALSE; }
+
+if ($_POST['wpmusc_replaceurl'] == 'on') { $replaceUrl = TRUE; } else { $replaceUrl = FALSE; }
+
 //if ($_POST['wpmusc_posts'] == 'on') { $copy_posts = TRUE; }
 //if ($_POST['wpmusc_pages'] == 'on') { $copy_pages = TRUE; }
 
@@ -200,6 +203,7 @@ foreach($the_array as $line) {
 		update_blog_option ($new_blog_id, 'blogname', $blogname);
 		update_blog_option ($new_blog_id, 'blogdescription', $blogdescription);
 		update_blog_option ($new_blog_id, 'admin_email', $admin_email);
+    
 		update_blog_option ($new_blog_id, 'home', $full_url);
 		update_blog_option ($new_blog_id, 'fileupload_url', $fileupload_url);
 		update_blog_option ($new_blog_id, 'upload_path', 'wp-content/blogs.dir/' . $new_blog_id . '/files');
@@ -284,6 +288,28 @@ foreach($the_array as $line) {
 			}
 		}
 	}
+    
+    //replace old site urls with new sites URLs
+    if(!$error AND $replaceUrl) {
+        global $wpdb;
+        require('safe-find-replace.php');
+        
+           $replace_old_url = get_blog_option ($template_id, 'siteurl'); //get old site url $siteurl is new site url
+           
+           $list_of_tables_toreplace = $wpdb->prefix . "${new_blog_id}_commentmeta," .
+                                       $wpdb->prefix . "${new_blog_id}_comments," .
+                                       $wpdb->prefix . "${new_blog_id}_links," .
+                                       $wpdb->prefix . "${new_blog_id}_options," .
+                                       $wpdb->prefix . "${new_blog_id}_postmeta," .
+                                       $wpdb->prefix . "${new_blog_id}_posts," .
+                                       $wpdb->prefix . "${new_blog_id}_terms," .
+                                       $wpdb->prefix . "${new_blog_id}_relationships," .
+                                       $wpdb->prefix . "${new_blog_id}_term_taxonomy";
+        
+        icit_srdb_replacer( $wpdb->dbh, $replace_old_url, $fullurl, split(',', $list_of_tables_toreplace ) ) ;
+        
+        
+    }
 	
 	//reset permalink structure
 	if(!$error) {
@@ -329,7 +355,13 @@ $normaltime = $nr_sites * $timeforone;
     <div id="tabs-2" >
         <?php 
 		echo '<h4>' . __( 'Job done, here are the results:', 'wpmusc_trdom' ) . '</h4>';
-        if ($nr_sites > 0) { _e("<p>It took only " .  $time . " seconds to create and clone ". $nr_sites . " sites!</p>", 'wpmusc_trdom' ); }
-        if ($failed) { _e("<span class=\"error\"><p>Hey $nr_failed sites could not be cloned due to errors, you might want to check the log why they failed.</p></span>", 'wpmusc_trdom' ); }
+        if ($nr_sites > 0) { 
+            _e("<p>It took only " .  $time . " seconds to create and clone ". $nr_sites . " sites!</p>", 'wpmusc_trdom' ); 
+            
+        }
+        if ($failed) { 
+            _e("<span class=\"error\"><p>Hey $nr_failed sites could not be cloned due to errors, you might want to check the log why they failed.</p></span>", 'wpmusc_trdom' );
+        }
+        ?>
     </div>
 </div>
