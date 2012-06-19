@@ -93,6 +93,8 @@ function try_use_parent_content(){
         add_action('do_meta_boxes', 'wpmusc_topof_pageedit_screen', 10, 3);  //output message to page edit screen
         add_action('pre_post_update', 'wpmusc_doc_make_master'); //make this page a master when it gets edited
         
+        add_action('wp_head', 'wpmusc_noindex_nonmasters');
+        
   }
 }
 add_action('init', 'try_use_parent_content'); 
@@ -241,6 +243,18 @@ function wpmusc_doc_make_master($id) {
        add_post_meta($id, 'wpmusc_doc_is_master', true);  
     }
 }
+
+function wpmusc_noindex_nonmasters(){
+    
+    if ( wpmusc_doc_is_master() ){
+       //do nothing this page is already a master
+    }else{
+       
+        //output no index but do follow links from the page, meta tag
+       echo '<meta name="robots" content="noindex, follow" />';
+    }
+}
+
 
 
 /**
