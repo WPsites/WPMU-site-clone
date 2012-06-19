@@ -25,6 +25,9 @@ if ($_POST['wpmusc_copyimages'] == 'on') { $copy_images = TRUE; } else { $copy_i
 
 if ($_POST['wpmusc_replaceurl'] == 'on') { $replaceUrl = TRUE; } else { $replaceUrl = FALSE; }
 
+
+if ($_POST['wpmusc_linkcontent'] == 'on') { $linkcontent = TRUE; } else { $linkcontent = FALSE; }
+
 //if ($_POST['wpmusc_posts'] == 'on') { $copy_posts = TRUE; }
 //if ($_POST['wpmusc_pages'] == 'on') { $copy_pages = TRUE; }
 
@@ -227,6 +230,12 @@ foreach($the_array as $line) {
 		add_blog_option ($new_blog_id, 'add-cloned-sites', serialize($savearray));
 		//get it back with:
 		//get_option('add-cloned-sites') == "" ? "" : $new = unserialize(get_option('add-cloned-sites'));
+	}
+    
+    
+    // add setting to option table to enable linked page content for later reference
+	if(!$error && $linkcontent) {
+		add_blog_option ($new_blog_id, 'add-cloned-sites-linked-pages', 'true');
 	}
 	
 	// Domainmap the newly cloned site
