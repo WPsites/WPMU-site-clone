@@ -191,10 +191,8 @@ function wpmusc_doc_is_master($id=''){
 function wpmusc_admin_pagelist( $actions ) {
  global $post;
  
- if ( wpmusc_doc_is_master($post->ID) ){ //if this page is a master then allow quick edit, otherwise remove
+ if ( wpmusc_doc_is_master($post->ID)  || $post->post_type!=='page' ){ //if this page is a master then allow quick edit, otherwise remove
     
-
- 
  }else{
      unset( $actions['inline hide-if-no-js'] ); //remove quick edit
  }
@@ -207,7 +205,7 @@ add_filter('page_row_actions','wpmusc_admin_pagelist',10,1);
 //indicate if the page is linked, in the page list (edit.php)
 function wpmusc_admin_pagelist_linked_indicator( $h_time, $post ) {
 
- if ( wpmusc_doc_is_master($post->ID) ){ //if this page is a master then allow quick edit, otherwise remove
+ if ( wpmusc_doc_is_master($post->ID) || $post->post_type!=='page'){ //if this page is a master then allow quick edit, otherwise remove
     return $h_time;
  }else{
      return $h_time . "<br /><strong>" . __('Linked to master &#8734;', 'wpmusc_trdom') . "</strong>";
@@ -221,7 +219,7 @@ add_filter('post_date_column_time','wpmusc_admin_pagelist_linked_indicator',50,2
 function wpmusc_topof_pageedit_screen($post_type, $pos, $post){
     
     if ($pos === 'normal'){
-        if ( wpmusc_doc_is_master($post->ID) ){ 
+        if ( wpmusc_doc_is_master($post->ID)  || $post->post_type!=='page' ){ 
             //do nothing as this page is the master
         }else{
             
